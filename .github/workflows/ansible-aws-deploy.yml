@@ -6,10 +6,17 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "Ansible-AWS-Infrastructure/**"
+      - ".github/workflows/ansible-aws-deploy.yml"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Ansible-AWS-Infrastructure
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
