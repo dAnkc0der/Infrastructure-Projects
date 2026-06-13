@@ -1,0 +1,7 @@
+group_vars
+inventory.ini
+vault.pass
+*.pem
+.env
+.ansible/
+*.retry

@@ -1,0 +1,7 @@
+---
+# vars file for aws
+aws_region: "us-east-1"
+key_name: "Key-Pair-2"
+instance_type: "t3.micro"
+ami_id: "ami-0fdfb4d987b63ae72"
+security_group_id: "sg-0984dfd4e1b532d33"

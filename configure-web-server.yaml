@@ -1,0 +1,38 @@
+---
+- name: Configure httpd server
+  hosts: all
+  become: true
+  tasks:
+    - name: Install firewalld library
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: Enable and start firewalld
+      ansible.builtin.systemd_service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Enable port 80
+      ansible.posix.firewalld:
+        port: 80/tcp
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+        
+    - name: Start and Enable httpd
+      ansible.builtin.systemd_service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Deploy static file
+      ansible.builtin.copy:
+        src: aws/files/index.html
+        dest: /var/www/html/index.html
