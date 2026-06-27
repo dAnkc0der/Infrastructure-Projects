@@ -1,0 +1,52 @@
+---
+- name: Create bastion security group
+  amazon.aws.ec2_security_group:
+    name: bastion-sg
+    description: Allow SSH from my port only
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: "{{ my_ip_cidr }}"
+        rule_desc: SSH from my IP
+    tags:
+      Name: bastion-sg
+  register: bastion_sg_result
+
+- name: Set facts for Bastion SG
+  ansible.builtin.set_fact:
+    bastion_sg_id: "{{ bastion_sg_result.group_id }}"
+
+- name: Create security group for app-server
+  amazon.aws.ec2_security_group:
+    name: app-sg
+    description: Allow SSH only from bastion
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        group_id: "{{ bastion_sg_id }}"
+        rule_desc: Allow SSH only from bastion
+    tags:
+      Name: app-sg
+  register: app_sg_result
+
+- name: Set facts for App SG
+  ansible.builtin.set_fact:
+    app_sg_id: "{{ app_sg_result.group_id }}"
+
+- name: Save security group facts
+  ansible.builtin.lineinfile:
+    path: "{{ playbook_directory }}/group_vars/all/network_facts.yml"
+    line: "{{ item }}"
+  loop:
+    - "bastion_sg_id: {{ bastion_sg_id }}"
+    - "app_sg_id: {{ app_sg_id }}"

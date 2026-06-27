@@ -1,0 +1,8 @@
+---
+- name: Show bastion public IP
+  ansible.builtin.debug:
+    msg: "Bastion public IP: {{ bastion_result.instances[0].public_ip_address }}"
+
+- name: Show app server private IP
+  ansible.builtin.debug:
+    msg: "App server private IP: {{ app_result.instances[0].private_ip_address | default('check AWS console') }}"

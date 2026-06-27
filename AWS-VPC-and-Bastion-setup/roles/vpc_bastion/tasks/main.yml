@@ -1,0 +1,15 @@
+---
+- name: Create VPC and subnets
+  ansible.builtin.import_tasks: network.yml
+
+- name: Create gateways and route tables
+  ansible.builtin.import_tasks: routing.yml
+
+- name: Create security groups
+  ansible.builtin.import_tasks: security_groups.yml
+
+- name: Launch EC2 instances
+  ansible.builtin.import_tasks: instances.yml
+
+- name: Show connection details
+  ansible.builtin.import_tasks: outputs.yml

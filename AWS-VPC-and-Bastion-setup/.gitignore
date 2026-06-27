@@ -1,0 +1,23 @@
+# Vault password and AWS secrets
+vault.pass
+group_vars/all/pass.yml
+
+# Local/generated network facts
+group_vars/all/network_facts.yml
+
+# Private SSH keys
+*.pem
+*.key
+
+# Ansible local files
+.ansible/
+*.retry
+
+# Environment files
+.env
+.env.*
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

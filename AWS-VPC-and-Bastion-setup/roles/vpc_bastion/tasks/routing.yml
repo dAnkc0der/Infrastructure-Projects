@@ -1,0 +1,58 @@
+---
+- name: Create Internet Gateway
+  amazon.aws.ec2_vpc_igw:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    tags:
+      name: "Public-Subnet-igw"
+  register: igw_result
+
+- name: Set IGW ID facts
+  ansible.builtin.set_fact:
+    igw_id: "{{ igw_result.gateway_id }}"
+
+- name: Create NAT Gateway in public subnet
+  amazon.aws.ec2_vpc_nat_gateway:
+    subnet_id: "{{ public_subnet_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    if_exist_do_not_create: true
+    wait: true
+    tags:
+      name: "AWS-Bastion-VPC-natgw"
+  register: natgw_result
+
+- name: Set NAT Gateway ID
+  ansible.builtin.set_fact:
+    nat_gw_id: "{{ natgw_result.nat_gateway_id }}"
+
+- name: Create Public route table via IGW
+  amazon.aws.ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    tags:
+      name: "AWS-Bastion-VPC-public-rt"
+    subnets:
+      - "{{ public_subnet_id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw_id }}"
+
+- name: Create Private route table via NAT
+  amazon.aws.ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    tags:
+      name: "AWS-Bastion-VPC-private-rt"
+    subnets:
+      - "{{ private_subnet_id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        nat_gateway_id: "{{ nat_gw_id }}"

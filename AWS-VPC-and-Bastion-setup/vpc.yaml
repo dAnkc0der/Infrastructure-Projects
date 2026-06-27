@@ -1,0 +1,9 @@
+---
+- name: VPC and Bastion host setup
+  hosts: localhost
+  connection: local
+  vars_files:
+    - group_vars/all/network_facts.yml
+
+  roles:
+    - role: vpc_bastion

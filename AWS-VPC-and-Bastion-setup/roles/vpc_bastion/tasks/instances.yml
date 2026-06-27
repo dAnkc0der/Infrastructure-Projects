@@ -1,0 +1,40 @@
+---
+- name: Launch Bastion host in public subnet
+  amazon.aws.ec2_instance:
+    name: bastion-host
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    instance_type: "{{ instance_type }}"
+    image_id: "{{ ami_id }}"
+    key_name: "{{ key_name }}"
+    vpc_subnet_id: "{{ public_subnet_id }}"
+    security_groups:
+      - "{{ bastion_sg_id }}"
+    network:
+      assign_public_ip: true
+    wait: true
+    tags:
+      Name: bastion-host
+      Role: bastion
+  register: bastion_result
+
+- name: Launch app server in private subnet
+  amazon.aws.ec2_instance:
+    name: app-server
+    region: "{{ aws_region }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    instance_type: "{{ instance_type }}"
+    image_id: "{{ ami_id }}"
+    key_name: "{{ key_name }}"
+    vpc_subnet_id: "{{ private_subnet_id }}"
+    security_groups:
+      - "{{ app_sg_id }}"
+    network:
+      assign_public_ip: false
+    wait: true
+    tags:
+      Name: app-server
+      Role: app
+  register: app_result
