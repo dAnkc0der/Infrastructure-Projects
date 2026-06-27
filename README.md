@@ -1,30 +1,14 @@
 # Infrastructure Projects
 
-This repository contains hands-on infrastructure and DevOps projects. Each project lives in its own folder, with shared GitHub Actions workflows stored at the repository root.
+This repository contains infrastructure and DevOps projects. 
 
 ## Projects
 
 | Project | Description |
 | --- | --- |
 | `Ansible-AWS-Infrastructure` | Provisions an AWS EC2 instance with Ansible and deploys a static site using GitHub Actions |
+| `AWS-VPC-and-Bastion-setup` | Provisions a VPC, public/private subnets, bastion host, private app server, and supporting network resources |
 
-## Repository Structure
-
-```text
-.
-├── .github/
-│   └── workflows/
-│       └── ansible-aws-deploy.yml
-├── Ansible-AWS-Infrastructure/
-│   ├── README.md
-│   ├── ansible.cfg
-│   ├── configure.yaml
-│   ├── configure-web-server.yaml
-│   ├── inventory.example.ini
-│   ├── requirements.yml
-│   └── aws/
-└── README.md
-```
 
 ## GitHub Actions
 
